@@ -1,0 +1,138 @@
+
+<div class="search-wrap">
+  <div class="search-bar" [class.has-value]="data.query().length > 0">
+    <span class="search-icon mono">⌕</span>
+    <input
+      type="text"
+      [value]="data.query()"
+      (input)="onInput($any($event.target).value)"
+      placeholder="Flat (A-1506) · Vehicle (MH12QM1593) · Mobile (98...) · Name"
+      data-testid="search-input"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    @if (data.query().length > 0) {
+      <button class="clear-btn mono" (click)="clear()" data-testid="clear-search-btn">clear ✕</button>
+    }
+  </div>
+
+  <div class="meta-row mono">
+    @if (data.loading()) {
+      <span data-testid="loading-text">loading registry…</span>
+    } @else {
+      <span data-testid="results-count">
+        {{ data.results().length }} / {{ data.residents().length }} entries
+      </span>
+      @if (data.query()) {
+        <span class="kind-pill" data-testid="search-kind-pill">
+          detected · {{ data.searchKind() }}
+        </span>
+      }
+    }
+  </div>
+
+  @if (!data.loading() && data.results().length === 0) {
+    <div class="empty" data-testid="empty-state">
+      <div class="empty-eyebrow mono">no match</div>
+      <div class="empty-title display">Nothing in the registry for &ldquo;{{ data.query() }}&rdquo;</div>
+      <div class="empty-hint">Try a flat number like <span class="mono">A-1506</span>, a registration like <span class="mono">MH12QM1593</span>, or any 10-digit mobile.</div>
+    </div>
+  }
+
+  <div class="results-grid" data-testid="results-grid">
+    @for (r of data.results(); track trackById($index, r)) {
+      <article class="card" [class.open]="isOpen(r.id)" data-testid="resident-card">
+        <header class="card-head" (click)="toggle(r.id)">
+          <div class="flat">
+            <span class="eyebrow mono">flat</span>
+            <span class="flat-num display" [innerHTML]="highlight(r.flatNumber)"></span>
+          </div>
+          <div class="primary">
+            <div class="name" [innerHTML]="highlight(r.primaryName || '—')"></div>
+            <div class="mobile mono" [innerHTML]="highlight(r.primaryMobile)"></div>
+          </div>
+          <div class="counts">
+            <span class="badge" title="2-Wheelers">2W · {{ r.vTotal2W || '0' }}</span>
+            <span class="badge" title="4-Wheelers">4W · {{ r.vTotal4W || '0' }}</span>
+            <span class="badge muted" title="Members">M · {{ r.totalMembers || r.members.length }}</span>
+          </div>
+          <span class="chev mono">{{ isOpen(r.id) ? '−' : '+' }}</span>
+        </header>
+
+        @if (isOpen(r.id)) {
+          <div class="card-body">
+            <section class="block">
+              <h4 class="block-title mono">contacts</h4>
+              <div class="kv">
+                <span>Primary</span>
+                <span [innerHTML]="highlight(r.primaryName || '—')"></span>
+              </div>
+              <div class="kv">
+                <span>Primary mobile</span>
+                <span class="mono" [innerHTML]="highlight(r.primaryMobile || '—')"></span>
+              </div>
+              @if (r.secondaryName) {
+                <div class="kv">
+                  <span>Secondary</span>
+                  <span [innerHTML]="highlight(r.secondaryName)"></span>
+                </div>
+              }
+              @if (r.secondaryMobile) {
+                <div class="kv">
+                  <span>Secondary mobile</span>
+                  <span class="mono" [innerHTML]="highlight(r.secondaryMobile)"></span>
+                </div>
+              }
+              <div class="kv">
+                <span>Occupied by</span>
+                <span>{{ r.occupiedBy || '—' }}</span>
+              </div>
+              @if (r.moveInDate) {
+                <div class="kv">
+                  <span>Move-in</span>
+                  <span class="mono">{{ r.moveInDate }}</span>
+                </div>
+              }
+            </section>
+
+            @if (r.vehicles.length > 0) {
+              <section class="block">
+                <h4 class="block-title mono">vehicles · {{ r.vehicles.length }}</h4>
+                <div class="vehicles">
+                  @for (v of r.vehicles; track v.reg) {
+                    <div class="vehicle">
+                      <span class="v-type mono">{{ v.type === '4-Wheeler' ? '4W' : '2W' }}</span>
+                      <span class="v-reg mono" [innerHTML]="highlight(v.reg)"></span>
+                      <span class="v-owner" [innerHTML]="highlight(v.owner)"></span>
+                    </div>
+                  }
+                </div>
+              </section>
+            }
+
+            @if (r.members.length > 0) {
+              <section class="block">
+                <h4 class="block-title mono">members · {{ r.members.length }}</h4>
+                <div class="members">
+                  @for (m of r.members; track m.name) {
+                    <div class="member">
+                      <span [innerHTML]="highlight(m.name)"></span>
+                      @if (m.age) { <span class="age mono">· {{ m.age }}</span> }
+                    </div>
+                  }
+                </div>
+              </section>
+            }
+
+            @if (r.anyPets && r.anyPets.toUpperCase() !== 'NO') {
+              <section class="block">
+                <h4 class="block-title mono">pets</h4>
+                <div>{{ r.petType1 }} {{ r.petType2 ? '· ' + r.petType2 : '' }}</div>
+              </section>
+            }
+          </div>
+        }
+      </article>
+    }
+  </div>
+</div>
