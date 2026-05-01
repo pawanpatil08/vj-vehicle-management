@@ -2,6 +2,28 @@
   padding: 28px;
 }
 
+.profile-page-header {
+  margin-bottom: 18px;
+}
+
+.back-btn {
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-deep);
+}
+
 .profile-card {
   max-width: 640px;
   margin: 0 auto;

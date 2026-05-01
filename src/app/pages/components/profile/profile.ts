@@ -33,6 +33,10 @@ export class ProfileComponent {
     this.router.navigate(['/register']);
   }
 
+  goBack() {
+    this.router.navigate(['/search']);
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
