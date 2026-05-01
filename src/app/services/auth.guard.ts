@@ -16,15 +16,17 @@ export const authGuard: CanActivateFn = (
 ) => {
   const authState = authService.authState();
   
-  // If still loading, allow navigation (don't block while checking session)
+  // If loading, allow navigation (session might be restoring)
   if (authState.loading) {
     return true;
   }
   
-  if (!authService.isAuthenticated()) {
+  // Only block if loading is complete and user is not authenticated
+  if (!authState.isAuthenticated) {
     router.navigate(['/login']);
     return false;
   }
+  
   return true;
 };
 
@@ -37,12 +39,13 @@ export const roleGuard = (allowedRoles: UserRole[]): CanActivateFn => {
   ) => {
     const authState = authService.authState();
     
-    // If still loading, allow navigation (don't block while checking session)
+    // If loading, allow navigation (session might be restoring)
     if (authState.loading) {
       return true;
     }
     
-    if (!authService.isAuthenticated()) {
+    // Only block if loading is complete and user is not authenticated
+    if (!authState.isAuthenticated) {
       router.navigate(['/login']);
       return false;
     }
