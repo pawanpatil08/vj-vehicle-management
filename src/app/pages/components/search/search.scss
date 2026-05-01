@@ -204,3 +204,61 @@ mark { background: var(--accent); color: var(--paper); padding: 0 3px; border-ra
   .search-bar { padding: 14px 16px; gap: 10px; }
   .search-bar input { font-size: 16px; }
 }
+
+
+
+.hero {
+  margin-bottom: 28px;
+  padding: 20px 0 4px;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.hero-title {
+  font-size: clamp(38px, 5.5vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 18px;
+  max-width: 880px;
+}
+.hero-title em {
+  font-style: italic;
+  font-family: 'Bricolage Grotesque', serif;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+.hero-title .accent {
+  color: var(--accent);
+  position: relative;
+  white-space: nowrap;
+}
+.hero-title .accent::after {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 4px;
+  height: 12px;
+  background: var(--accent-soft);
+  z-index: -1;
+  border-radius: 4px;
+}
+.hero-sub {
+  color: var(--ink-soft);
+  font-size: 16px;
+  max-width: 720px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.frame {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 28px 80px;
+  position: relative;
+}

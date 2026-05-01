@@ -1,0 +1,76 @@
+.profile-page {
+  padding: 28px;
+}
+
+.profile-card {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: var(--shadow-1);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.profile-copy h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.meta {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.profile-details {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.profile-details div {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.value {
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.profile-actions {
+  margin-top: 26px;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+
+.help-text {
+  margin: 0 0 14px;
+  color: var(--ink-soft);
+}

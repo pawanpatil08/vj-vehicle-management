@@ -1,60 +1,16 @@
-<div class="frame">
-  <header class="topbar" data-testid="app-header">
-    <div class="brand">
-      <div class="logo-block">
-        <span class="brand-mark mono">YSN</span>
-        <span class="brand-bar"></span>
-        <span class="brand-wing display">A&nbsp;Wing</span>
-      </div>
-      <div class="brand-sub mono">resident · vehicle · contact registry</div>
-    </div>
+<header class="app-header" *ngIf="authService.isAuthenticated()">
+  <div class="header-left">
+    <div class="header-brand">Vehicle Management</div>
+  </div>
 
-    <nav class="tabs" role="tablist">
-      <button
-        role="tab"
-        class="tab"
-        [class.active]="view() === 'search'"
-        (click)="setView('search')"
-        data-testid="tab-search"
-      >search</button>
-      <button
-        role="tab"
-        class="tab"
-        [class.active]="view() === 'admin'"
-        (click)="setView('admin')"
-        data-testid="tab-admin"
-      >admin</button>
-    </nav>
-  </header>
+  <div class="header-right">
+    <button class="profile-button" type="button" (click)="router.navigate(['/profile'])" aria-label="Open profile page">
+      <span class="avatar">{{ avatarInitial }}</span>
+    </button>
+  </div>
+</header>
 
-  @if (view() === 'search') {
-    <section class="hero">
-      <div class="hero-eyebrow mono">single field · auto-detect</div>
-      <h1 class="hero-title display">
-        Find anyone in <span class="accent">A&nbsp;Wing</span><br/>
-        by <em>flat</em>, <em>vehicle</em>, or <em>mobile</em>.
-      </h1>
-      <p class="hero-sub">
-        The full registry is parsed into a single in-memory JSON object on load —
-        every keystroke filters across <span class="mono">{{ data.residents().length }}</span> entries
-        and <span class="mono">{{ totalVehicles() }}</span> vehicles in real time.
-      </p>
-    </section>
+<router-outlet></router-outlet>
 
-    <main class="main">
-      <app-search />
-    </main>
-  } @else {
-    <main class="main">
-      <app-admin />
-    </main>
-  }
 
-  <footer class="foot mono">
-    <span>YSN · A-Wing registry</span>
-    <span class="dot">·</span>
-    <span>angular {{ '21' }} · signals only</span>
-    <span class="dot">·</span>
-    <span data-testid="footer-count">{{ data.residents().length }} entries loaded</span>
-  </footer>
-</div>
+

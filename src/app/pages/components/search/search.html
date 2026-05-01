@@ -1,5 +1,16 @@
-
-<div class="search-wrap">
+<section class="hero frame">
+  <div class="hero-eyebrow mono">single field · auto-detect</div>
+  <h1 class="hero-title display">
+    Find anyone in <span class="accent">A&nbsp;Wing</span><br />
+    by <em>flat</em>, <em>vehicle</em>, or <em>mobile</em>.
+  </h1>
+  <p class="hero-sub">
+    The full registry is parsed into a single in-memory JSON object on load — every keystroke
+    filters across <span class="mono">{{ data.residents().length }}</span> entries and
+    <span class="mono">{{ totalVehicles() }}</span> vehicles in real time.
+  </p>
+</section>
+<div class="search-wrap frame">
   <div class="search-bar" [class.has-value]="data.query().length > 0">
     <span class="search-icon mono">⌕</span>
     <input
@@ -12,7 +23,9 @@
       spellcheck="false"
     />
     @if (data.query().length > 0) {
-      <button class="clear-btn mono" (click)="clear()" data-testid="clear-search-btn">clear ✕</button>
+      <button class="clear-btn mono" (click)="clear()" data-testid="clear-search-btn">
+        clear ✕
+      </button>
     }
   </div>
 
@@ -34,8 +47,13 @@
   @if (!data.loading() && data.results().length === 0) {
     <div class="empty" data-testid="empty-state">
       <div class="empty-eyebrow mono">no match</div>
-      <div class="empty-title display">Nothing in the registry for &ldquo;{{ data.query() }}&rdquo;</div>
-      <div class="empty-hint">Try a flat number like <span class="mono">A-1506</span>, a registration like <span class="mono">MH12QM1593</span>, or any 10-digit mobile.</div>
+      <div class="empty-title display">
+        Nothing in the registry for &ldquo;{{ data.query() }}&rdquo;
+      </div>
+      <div class="empty-hint">
+        Try a flat number like <span class="mono">A-1506</span>, a registration like
+        <span class="mono">MH12QM1593</span>, or any 10-digit mobile.
+      </div>
     </div>
   }
 
@@ -54,7 +72,9 @@
           <div class="counts">
             <span class="badge" title="2-Wheelers">2W · {{ r.vTotal2W || '0' }}</span>
             <span class="badge" title="4-Wheelers">4W · {{ r.vTotal4W || '0' }}</span>
-            <span class="badge muted" title="Members">M · {{ r.totalMembers || r.members.length }}</span>
+            <span class="badge muted" title="Members"
+              >M · {{ r.totalMembers || r.members.length }}</span
+            >
           </div>
           <span class="chev mono">{{ isOpen(r.id) ? '−' : '+' }}</span>
         </header>
@@ -117,7 +137,9 @@
                   @for (m of r.members; track m.name) {
                     <div class="member">
                       <span [innerHTML]="highlight(m.name)"></span>
-                      @if (m.age) { <span class="age mono">· {{ m.age }}</span> }
+                      @if (m.age) {
+                        <span class="age mono">· {{ m.age }}</span>
+                      }
                     </div>
                   }
                 </div>

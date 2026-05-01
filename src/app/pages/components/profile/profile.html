@@ -1,0 +1,38 @@
+<div class="profile-page">
+  <section class="profile-card">
+    <div class="profile-header">
+      <div class="avatar">{{ avatarLetter }}</div>
+      <div class="profile-copy">
+        <div class="eyebrow mono">User profile</div>
+        <h1>{{ user?.name || user?.email || 'Unknown user' }}</h1>
+        <p class="meta">{{ user?.email }}</p>
+      </div>
+    </div>
+
+    <div class="profile-details">
+      <div>
+        <span class="label">Role</span>
+        <strong class="value">{{ user?.role }}</strong>
+      </div>
+      <div>
+        <span class="label">Wing</span>
+        <strong class="value">{{ user?.wing || 'Not assigned' }}</strong>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <p class="help-text">
+        @if (isAdmin) {
+          As an admin, you can register new users from here.
+        } @else {
+          Only admins can register new users. Contact your administrator to create an account.
+        }
+      </p>
+      @if (isAdmin) {
+        <button type="button" class="primary-btn" (click)="goToRegister()">
+          Register a new user
+        </button>
+      }
+    </div>
+  </section>
+</div>

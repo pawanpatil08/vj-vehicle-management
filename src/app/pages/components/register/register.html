@@ -1,0 +1,163 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="eyebrow mono">create account</div>
+      <h1 class="display">Get Started</h1>
+      <p class="hint">Create an account to start managing the vehicle registry</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label for="name" class="form-label mono">Full Name</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="Puneet Deshpande"
+          data-testid="register-name"
+        />
+        @if (registerForm.get('name')?.hasError('required') && registerForm.get('name')?.touched) {
+          <span class="error-text mono">Name is required</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label mono">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="your@email.com"
+          data-testid="register-email"
+        />
+        @if (registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched) {
+          <span class="error-text mono">Email is required</span>
+        }
+        @if (registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched) {
+          <span class="error-text mono">Invalid email format</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="wing" class="form-label mono">Wing / Building</label>
+        <select
+          id="wing"
+          formControlName="wing"
+          data-testid="register-wing"
+        >
+          <option value="">Select Wing</option>
+          <option value="A-Wing">A</option>
+          <option value="B-Wing">B</option>
+          <option value="C-Wing">C</option>
+
+        </select>
+        @if (registerForm.get('wing')?.hasError('required') && registerForm.get('wing')?.touched) {
+          <span class="error-text mono">Wing/Building is required</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label mono">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+          data-testid="register-password"
+        />
+        @if (registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched) {
+          <span class="error-text mono">Password is required</span>
+        }
+        @if (registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched) {
+          <span class="error-text mono">Password must be at least 6 characters</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="role" class="form-label mono">Select Your Role</label>
+        <select formControlName="role" id="role" data-testid="register-role">
+          <option value="supervisor">Supervisor (View Only)</option>
+          <option value="admin">Admin (Full Access)</option>
+          <option value="datamanagement">Data Management (Edit Access)</option>
+        </select>
+        <p class="role-hint mono">
+          @switch (registerForm.get('role')?.value) {
+            @case ('supervisor') {
+              <span>View and filter vehicle data only</span>
+            }
+            @case ('admin') {
+              <span>Full access - add, edit, and delete entries</span>
+            }
+            @case ('datamanagement') {
+              <span>Add, edit, and delete entries</span>
+            }
+          }
+        </p>
+      </div>
+
+      @if (authService.authState().error) {
+        <div class="error-card mono" data-testid="register-error">
+          {{ authService.authState().error }}
+        </div>
+      }
+
+      <button
+        type="submit"
+        class="primary-btn"
+        [disabled]="registerForm.invalid || authService.authState().loading"
+        data-testid="register-btn"
+      >
+        @if (authService.authState().loading) {
+          <span>creating account…</span>
+        } @else {
+          <span>create account →</span>
+        }
+      </button>
+    </form>
+
+    <div class="auth-divider">
+      <span>or</span>
+    </div>
+
+    <div class="auth-footer">
+      <p class="hint">Already have an account?</p>
+      <a routerLink="/login" class="link-btn">Sign in →</a>
+    </div>
+  </div>
+
+  <!-- Role Information -->
+  <div class="role-info">
+    <div class="role-card">
+      <div class="role-icon">👀</div>
+      <h3 class="mono">Supervisor</h3>
+      <p>View and search vehicle registry entries. No editing permissions.</p>
+      <ul>
+        <li>Search vehicles</li>
+        <li>Filter by criteria</li>
+        <li>View details</li>
+      </ul>
+    </div>
+
+    <div class="role-card">
+      <div class="role-icon">👨‍💼</div>
+      <h3 class="mono">Admin</h3>
+      <p>Full access to manage the entire vehicle registry.</p>
+      <ul>
+        <li>Add entries</li>
+        <li>Edit entries</li>
+        <li>Delete entries</li>
+      </ul>
+    </div>
+
+    <div class="role-card">
+      <div class="role-icon">📊</div>
+      <h3 class="mono">Data Management</h3>
+      <p>Manage vehicle registry data with edit permissions.</p>
+      <ul>
+        <li>Add entries</li>
+        <li>Edit entries</li>
+        <li>Delete entries</li>
+      </ul>
+    </div>
+  </div>
+</div>
