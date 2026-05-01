@@ -32,4 +32,9 @@ export class ProfileComponent {
   goToRegister() {
     this.router.navigate(['/register']);
   }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }
