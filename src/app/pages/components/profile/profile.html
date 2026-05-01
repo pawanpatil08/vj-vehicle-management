@@ -1,9 +1,10 @@
 <div class="profile-page">
   <div class="profile-page-header">
-    <button type="button" class="back-btn" (click)="goBack()" aria-label="Back to search">
-      ← Back to search
+    <button type="button" class="back-btn" (click)="goBack()" aria-label="Back to dashboard">
+      ← Back to dashboard
     </button>
   </div>
+
   <section class="profile-card">
     <div class="profile-header">
       <div class="avatar">{{ avatarLetter }}</div>
@@ -28,19 +29,118 @@
     <div class="profile-actions">
       <p class="help-text">
         @if (isAdmin) {
-          As an admin, you can register new users from here.
+          As an admin, you can manage all users below.
         } @else {
-          Only admins can register new users. Contact your administrator to create an account.
+          Only admins can manage users.
         }
       </p>
-      @if (isAdmin) {
+      <!-- @if (isAdmin) {
         <button type="button" class="primary-btn" (click)="goToRegister()">
           Register a new user
         </button>
-      }
+      } -->
       <button type="button" class="logout-btn" (click)="logout()">
         Logout
       </button>
     </div>
   </section>
+
+  @if (isAdmin) {
+    <section class="user-management">
+      <div class="section-header">
+        <h2>User Management</h2>
+        <button type="button" class="primary-btn small" (click)="goToRegister()">
+          + Add User
+        </button>
+      </div>
+
+      @if (loading()) {
+        <div class="loading">Loading users...</div>
+      } @else {
+        <div class="user-table-container">
+          <table class="user-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Wing</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of users(); track user.id) {
+                @if (editingUser()?.id === user.id) {
+                  <tr class="editing-row">
+                    <td>
+                      <input
+                        type="text"
+                        [value]="editingUser()?.name"
+                        (input)="updateEditingUser('name', $any($event.target).value)"
+                        placeholder="Name"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="email"
+                        [value]="editingUser()?.email"
+                        (input)="updateEditingUser('email', $any($event.target).value)"
+                        placeholder="Email"
+                      />
+                    </td>
+                    <td>
+                      <select
+                        [value]="editingUser()?.role"
+                        (change)="updateEditingUser('role', $any($event.target).value)"
+                      >
+                        <option value="supervisor">Supervisor</option>
+                        <option value="datamanagement">Data Management</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        [value]="editingUser()?.wing"
+                        (input)="updateEditingUser('wing', $any($event.target).value)"
+                        placeholder="Wing"
+                      />
+                    </td>
+                    <td class="mono">{{ user.createdAt | date:'short' }}</td>
+                    <td class="actions">
+                      <button type="button" class="save-btn small" (click)="saveUser()">Save</button>
+                      <button type="button" class="cancel-btn small" (click)="cancelEdit()">Cancel</button>
+                    </td>
+                  </tr>
+                } @else {
+                  <tr>
+                    <td>{{ user.name || '—' }}</td>
+                    <td class="mono">{{ user.email }}</td>
+                    <td>
+                      <span class="role-badge" [class]="'role-' + user.role">
+                        {{ user.role }}
+                      </span>
+                    </td>
+                    <td>{{ user.wing || '—' }}</td>
+                    <td class="mono">{{ user.createdAt | date:'short' }}</td>
+                    <td class="actions">
+                      <button type="button" class="edit-btn small" (click)="startEdit(user)">Edit</button>
+                      <button type="button" class="delete-btn small" (click)="deleteUser(user)">Delete</button>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+
+          @if (users().length === 0) {
+            <div class="empty-state">
+              <p>No users found.</p>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  }
 </div>

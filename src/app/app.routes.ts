@@ -12,6 +12,11 @@ export const routes: Routes = [
     canActivate: [roleGuard(['admin'])],
   },
   {
+    path: 'dashboard',
+    loadComponent: () => import('./pages/components/dashboard/dashboard').then((m) => m.DashboardComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'profile',
     loadComponent: () => import('./pages/components/profile/profile').then((m) => m.ProfileComponent),
     canActivate: [authGuard],
@@ -28,6 +33,6 @@ export const routes: Routes = [
       import('./pages/components/admin/admin').then((m) => m.AdminComponent),
     canActivate: [roleGuard(['admin', 'datamanagement'])],
   },
-  { path: '**', redirectTo: '/search' },
+  { path: '**', redirectTo: '/dashboard' },
 ];
 

@@ -1,0 +1,97 @@
+<div class="dashboard-page">
+  <div class="dashboard-header">
+    <div class="welcome-section">
+      <div class="avatar">{{ avatarLetter }}</div>
+      <div class="welcome-text">
+        <h1>Welcome back, {{ user()?.name || 'User' }}!</h1>
+        <p class="role-badge role-{{ user()?.role }}">{{ user()?.role }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <!-- Search Card - Available to all roles -->
+    <div class="activity-card search-card" (click)="goToSearch()">
+      <div class="card-icon">🔍</div>
+      <div class="card-content">
+        <h3>Search Vehicles</h3>
+        <p>Find and view vehicle information by flat number, registration, or resident details</p>
+        <div class="card-action">
+          <span>Go to Search →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Role-based Activity Cards -->
+    @if (isAdmin) {
+      <div class="activity-card admin-card" (click)="goToAdmin()">
+        <div class="card-icon">👨‍💼</div>
+        <div class="card-content">
+          <h3>Manage Data</h3>
+          <p>Add, edit, and delete resident and vehicle records</p>
+          <div class="card-action">
+            <span>Open Admin Panel →</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-card register-card" (click)="goToProfile()">
+        <div class="card-icon">👥</div>
+        <div class="card-content">
+          <h3>User Management</h3>
+          <p>Register new users and manage access permissions</p>
+          <div class="card-action">
+            <span>Manage Users →</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (isDataManager) {
+      <div class="activity-card admin-card" (click)="goToAdmin()">
+        <div class="card-icon">📊</div>
+        <div class="card-content">
+          <h3>Data Management</h3>
+          <p>Update resident information and vehicle records</p>
+          <div class="card-action">
+            <span>Open Data Panel →</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (isSupervisor) {
+      <div class="activity-card info-card">
+        <div class="card-icon">👀</div>
+        <div class="card-content">
+          <h3>View Only Access</h3>
+          <p>You have read-only access to search and view vehicle information</p>
+          <div class="card-action">
+            <span>Use search above to get started</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Quick Stats -->
+    <div class="stats-section">
+      <h2>Quick Overview</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🏢</div>
+          <div class="stat-info">
+            <span class="stat-number">{{ user()?.wing || 'N/A' }}</span>
+            <span class="stat-label">Your Wing</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <span class="stat-number">{{ user()?.createdAt | date:'short' }}</span>
+            <span class="stat-label">Member Since</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

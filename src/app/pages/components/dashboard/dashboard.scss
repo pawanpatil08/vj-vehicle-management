@@ -1,0 +1,187 @@
+.dashboard-page {
+  padding: 28px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  margin-bottom: 32px;
+}
+
+.welcome-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow-1);
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.welcome-text h1 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.role-supervisor { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.role-admin { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+.role-datamanagement { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+
+.dashboard-content {
+  display: grid;
+  gap: 24px;
+}
+
+.activity-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.activity-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.12);
+  transform: translateY(-2px);
+}
+
+.card-icon {
+  font-size: 32px;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--accent-soft);
+}
+
+.search-card .card-icon { background: rgba(59, 130, 246, 0.1); }
+.admin-card .card-icon { background: rgba(239, 68, 68, 0.1); }
+.register-card .card-icon { background: rgba(34, 197, 94, 0.1); }
+.info-card .card-icon { background: rgba(156, 163, 175, 0.1); }
+
+.card-content {
+  flex: 1;
+}
+
+.card-content h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.card-content p {
+  margin: 0 0 12px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.card-action {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.stats-section {
+  margin-top: 16px;
+}
+
+.stats-section h2 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow-1);
+}
+
+.stat-icon {
+  font-size: 24px;
+}
+
+.stat-info {
+  display: grid;
+  gap: 2px;
+}
+
+.stat-number {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 768px) {
+  .dashboard-page {
+    padding: 16px;
+  }
+
+  .welcome-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .activity-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

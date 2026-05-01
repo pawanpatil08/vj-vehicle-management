@@ -40,7 +40,7 @@ export class LoginComponent {
       // Wait a brief moment for the auth state listener to update with user profile
       await new Promise(resolve => setTimeout(resolve, 300));
       
-      this.router.navigate(['/search']);
+      this.router.navigate(['/dashboard']);
     } catch (error) {
       console.error('Login error:', error);
     }

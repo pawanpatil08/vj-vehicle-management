@@ -1,195 +1,35 @@
 
-@if (!data.isAdmin()) {
-  <div class="login-card" data-testid="admin-login-card">
-    <div class="eyebrow mono">restricted</div>
-    <h2 class="display">Admin sign-in</h2>
-    <p class="hint">Enter the admin password to add, edit, or delete entries in the registry.</p>
-    <form (submit)="$event.preventDefault(); attemptLogin()" class="login-form">
-      <input
-        type="password"
-        [value]="password()"
-        (input)="password.set($any($event.target).value)"
-        placeholder="admin password"
-        data-testid="admin-password-input"
-        autocomplete="current-password"
-      />
-      <button type="submit" class="primary-btn" data-testid="admin-login-btn">unlock →</button>
-    </form>
-    @if (loginError()) {
-      <div class="err mono" data-testid="admin-login-error">{{ loginError() }}</div>
-    }
-    <div class="hint-tiny mono">hint · default password is <code>admin123</code></div>
-  </div>
-} @else {
-  <div class="admin-shell" data-testid="admin-panel">
-    <div class="admin-bar">
-      <div class="left">
-        <span class="eyebrow mono">admin mode</span>
-        <h2 class="display">Manage registry</h2>
+<div class="development-page">
+  <div class="development-card">
+    <div class="crazy-icon">🚀💥🔥</div>
+    <div class="development-content">
+      <div class="eyebrow mono">coming soon</div>
+      <h1 class="display">Admin Panel</h1>
+      <p class="hint">This feature is currently under development. We're working hard to bring you the best admin experience!</p>
+      <div class="development-features">
+        <div class="feature-item">
+          <span class="feature-icon">⚡</span>
+          <span>Advanced data management</span>
+        </div>
+        <!-- <div class="feature-item">
+          <span class="feature-icon">🔒</span>
+          <span>Enhanced security controls</span>
+        </div> -->
+        <!-- <div class="feature-item">
+          <span class="feature-icon">📊</span>
+          <span>Comprehensive analytics</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🎯</span>
+          <span>Smart automation tools</span>
+        </div> -->
       </div>
-      <div class="right">
-        <button class="ghost-btn" (click)="logout()" data-testid="admin-logout-btn">lock</button>
-        <button class="primary-btn" (click)="startNew()" data-testid="admin-add-btn">+ new entry</button>
+      <div class="development-actions">
+        <button type="button" class="primary-btn" (click)="goToDashboard()">
+          <span>🏠</span>
+          Go to Dashboard
+        </button>
       </div>
     </div>
-
-    <input
-      class="filter-input"
-      type="text"
-      [value]="filter()"
-      (input)="filter.set($any($event.target).value)"
-      placeholder="filter list…"
-      data-testid="admin-filter-input"
-    />
-
-    @if (showForm()) {
-      <div class="form-card" data-testid="admin-form">
-        <div class="form-head">
-          <span class="eyebrow mono">{{ editingId() ? 'editing' : 'new' }}</span>
-          <h3 class="display">{{ editingId() ? 'Update entry' : 'Create entry' }}</h3>
-        </div>
-
-        <div class="grid">
-          <label>
-            <span>Flat number *</span>
-            <input
-              [value]="form().flatNumber"
-              (input)="updateField('flatNumber', $any($event.target).value)"
-              placeholder="A-1506"
-              data-testid="form-flat"
-            />
-          </label>
-          <label>
-            <span>Occupied by</span>
-            <select
-              [value]="form().occupiedBy"
-              (change)="updateField('occupiedBy', $any($event.target).value)"
-              data-testid="form-occupied"
-            >
-              <option>Owner</option>
-              <option>Tenant</option>
-            </select>
-          </label>
-          <label>
-            <span>Primary name</span>
-            <input
-              [value]="form().primaryName"
-              (input)="updateField('primaryName', $any($event.target).value)"
-              data-testid="form-pname"
-            />
-          </label>
-          <label>
-            <span>Primary mobile</span>
-            <input
-              [value]="form().primaryMobile"
-              (input)="updateField('primaryMobile', $any($event.target).value)"
-              data-testid="form-pmobile"
-            />
-          </label>
-          <label>
-            <span>Secondary name</span>
-            <input
-              [value]="form().secondaryName"
-              (input)="updateField('secondaryName', $any($event.target).value)"
-            />
-          </label>
-          <label>
-            <span>Secondary mobile</span>
-            <input
-              [value]="form().secondaryMobile"
-              (input)="updateField('secondaryMobile', $any($event.target).value)"
-            />
-          </label>
-          <label>
-            <span>Total members</span>
-            <input
-              [value]="form().totalMembers"
-              (input)="updateField('totalMembers', $any($event.target).value)"
-            />
-          </label>
-          <label>
-            <span>2-Wheelers</span>
-            <input
-              [value]="form().vTotal2W"
-              (input)="updateField('vTotal2W', $any($event.target).value)"
-            />
-          </label>
-          <label>
-            <span>4-Wheelers</span>
-            <input
-              [value]="form().vTotal4W"
-              (input)="updateField('vTotal4W', $any($event.target).value)"
-            />
-          </label>
-        </div>
-
-        <div class="sub-block">
-          <div class="sub-head">
-            <h4 class="mono">vehicles</h4>
-            <button class="ghost-btn small" (click)="addVehicleRow()" data-testid="form-add-vehicle">+ add</button>
-          </div>
-          @for (v of form().vehicles; track $index; let i = $index) {
-            <div class="row">
-              <input placeholder="owner" [value]="v.owner"
-                (input)="updateVehicle(i, 'owner', $any($event.target).value)" />
-              <input placeholder="reg (MH12QM1593)" class="mono" [value]="v.reg"
-                (input)="updateVehicle(i, 'reg', $any($event.target).value)" />
-              <select [value]="v.type" (change)="updateVehicle(i, 'type', $any($event.target).value)">
-                <option>4-Wheeler</option>
-                <option>2-Wheeler</option>
-              </select>
-              <button class="x-btn" (click)="removeVehicleRow(i)" type="button">✕</button>
-            </div>
-          }
-        </div>
-
-        <div class="sub-block">
-          <div class="sub-head">
-            <h4 class="mono">members</h4>
-            <button class="ghost-btn small" (click)="addMemberRow()">+ add</button>
-          </div>
-          @for (m of form().members; track $index; let i = $index) {
-            <div class="row">
-              <input placeholder="name" [value]="m.name"
-                (input)="updateMember(i, 'name', $any($event.target).value)" />
-              <input placeholder="age" class="mono" [value]="m.age"
-                (input)="updateMember(i, 'age', $any($event.target).value)" />
-              <button class="x-btn" (click)="removeMemberRow(i)" type="button">✕</button>
-            </div>
-          }
-        </div>
-
-        <div class="form-actions">
-          <button class="ghost-btn" (click)="cancelForm()" data-testid="form-cancel">cancel</button>
-          <button class="primary-btn" (click)="save()" data-testid="form-save">{{ editingId() ? 'save changes' : 'create entry' }}</button>
-        </div>
-      </div>
-    }
-
-    <div class="list" data-testid="admin-list">
-      @for (r of filteredList(); track r.id) {
-        <div class="row-item" data-testid="admin-row">
-          <div class="r-flat display">{{ r.flatNumber }}</div>
-          <div class="r-name">
-            {{ r.primaryName || '—' }}
-            <span class="r-mobile mono">· {{ r.primaryMobile || '—' }}</span>
-          </div>
-          <div class="r-counts mono">
-            2W:{{ r.vTotal2W || '0' }} · 4W:{{ r.vTotal4W || '0' }} · M:{{ r.members.length }}
-          </div>
-          <div class="r-actions">
-            <button class="ghost-btn small" (click)="startEdit(r)" data-testid="admin-edit-btn">edit</button>
-            <button class="danger-btn small" (click)="delete(r)" data-testid="admin-delete-btn">delete</button>
-          </div>
-        </div>
-      }
-      @if (filteredList().length === 0) {
-        <div class="empty mono">no entries match filter</div>
-      }
-    </div>
-
-    @if (toast()) {
-      <div class="toast" data-testid="admin-toast">{{ toast() }}</div>
-    }
   </div>
-}
+</div>

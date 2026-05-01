@@ -37,7 +37,7 @@ export class RegisterComponent {
         wing!,
         role as UserRole
       );
-      this.router.navigate(['/search']);
+      this.router.navigate(['/dashboard']);
     } catch (error) {
       console.error('Registration error:', error);
     }

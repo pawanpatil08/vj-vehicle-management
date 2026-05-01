@@ -11,6 +11,10 @@ import {
   doc,
   setDoc,
   getDoc,
+  collection,
+  getDocs,
+  deleteDoc,
+  updateDoc,
   Firestore,
 } from 'firebase/firestore';
 import { User, UserRole, AuthState } from '../model/user.model';
@@ -224,5 +228,54 @@ export class AuthService {
 
   canSearch(): boolean {
     return this.isAuthenticated();
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const usersRef = collection(this.firestore, 'users');
+      const querySnapshot = await getDocs(usersRef);
+      const users: User[] = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        users.push({
+          id: doc.id,
+          email: data['email'] || '',
+          name: data['name'] || '',
+          role: data['role'] || 'supervisor',
+          wing: data['wing'] || '',
+          createdAt: new Date(data['createdAt']),
+        });
+      });
+
+      return users;
+    } catch (error) {
+      console.error('Error getting all users:', error);
+      throw error;
+    }
+  }
+
+  async deleteUser(userId: string): Promise<void> {
+    try {
+      await deleteDoc(doc(this.firestore, 'users', userId));
+      // Note: Firebase Auth user deletion would require admin SDK
+      // For now, we only delete from Firestore
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
+  }
+
+  async updateUser(userId: string, updates: Partial<User>): Promise<void> {
+    try {
+      const updateData: any = { ...updates };
+      if (updates.createdAt) {
+        updateData.createdAt = updates.createdAt.toISOString();
+      }
+      await updateDoc(doc(this.firestore, 'users', userId), updateData);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
   }
 }

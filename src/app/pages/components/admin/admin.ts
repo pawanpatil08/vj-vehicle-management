@@ -2,6 +2,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { Resident, VehicleEntry, Member } from '../../../model/resident.model';
 
@@ -44,6 +45,7 @@ const emptyForm = (): AdminFormState => ({
 })
 export class AdminComponent {
   data = inject(DataService);
+  router = inject(Router);
 
   readonly password = signal<string>('');
   readonly loginError = signal<string>('');
@@ -72,6 +74,10 @@ export class AdminComponent {
   }
 
   logout() { this.data.logout(); }
+
+  goToDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
 
   startNew() {
     this.editingId.set(null);
