@@ -13,19 +13,11 @@ import { AuthService } from './services/auth.service';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App implements OnInit {
+export class App  {
   data = inject(DataService);
   authService = inject(AuthService);
   router = inject(Router);
   view = signal<'search' | 'admin'>('search');
-
-  totalVehicles = computed(() =>
-    this.data.residents().reduce((acc, r) => acc + r.vehicles.length, 0),
-  );
-
-  ngOnInit() {
-    this.data.load();
-  }
 
   setView(v: 'search' | 'admin') { this.view.set(v); }
 

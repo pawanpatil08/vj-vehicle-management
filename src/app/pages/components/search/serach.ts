@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { DataService } from '../../../services/data.service';
 import { AuthService } from '../../../services/auth.service';
 import { Resident } from '../../../model/resident.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -19,12 +20,16 @@ export class SearchComponent {
   authService = inject(AuthService);
   expanded = signal<Set<string>>(new Set());
 
-
+  private router = inject(Router);
  totalVehicles = computed(() =>
     this.data.residents().reduce((acc, r) => acc + r.vehicles.length, 0),
   );
 
   
+
+    ngOnInit() {
+    this.data.load();
+  }
   onInput(value: string) {
     this.data.setQuery(value);
   }
@@ -55,4 +60,9 @@ export class SearchComponent {
   }
 
   trackById = (_: number, r: Resident) => r.id;
+
+    goBack() {
+    this.router.navigate(['/dashboard']);
+  }
+
 }

@@ -2,6 +2,21 @@
 :host { display: block; }
 
 .search-wrap { position: relative; z-index: 1; }
+.profile-page-header {
+  margin-bottom: 18px;
+}
+
+.back-btn {
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
 .search-bar {
   display: flex;
@@ -259,6 +274,6 @@ mark { background: var(--accent); color: var(--paper); padding: 0 3px; border-ra
 .frame {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 28px 28px 80px;
+  padding: 28px 28px 10px 40px;
   position: relative;
 }
