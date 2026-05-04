@@ -1,7 +1,7 @@
 :host {
   display: block;
   min-height: 100vh;
-  background: var(--bg);
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/image.png') center/cover no-repeat fixed;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,11 +19,12 @@
 
 .auth-card {
   flex: 1;
-  background: var(--paper);
-  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: var(--radius);
   padding: 40px;
-  box-shadow: var(--shadow-2);
+  box-shadow: var(--shadow-4);
 }
 
 .auth-header {
@@ -215,6 +216,9 @@
 }
 
 @media (max-width: 768px) {
+  :host {
+    background-attachment: scroll;
+  }
   .auth-container {
     flex-direction: column;
     gap: 24px;
@@ -222,6 +226,9 @@
 
   .auth-card {
     padding: 24px;
+    margin: 0 8px;
+    width: 100%;
+    max-width: none;
   }
 
   .auth-header h1 {
