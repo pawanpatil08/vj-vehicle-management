@@ -38,6 +38,15 @@ export class AuthService {
     this.initAuthStateListener();
   }
 
+  private normalizeRole(role: unknown): UserRole | null {
+    const raw = String(role ?? '').trim().toLowerCase();
+    if (!raw) return null;
+    if (raw === 'admin') return 'admin';
+    if (raw === 'datamanagement' || raw === 'data-management' || raw === 'data management') return 'datamanagement';
+    if (raw === 'supervisor') return 'supervisor';
+    return null;
+  }
+
   private async ensureUserProfile(firebaseUser: FirebaseUser): Promise<User> {
     const userRef = doc(this.firestore, 'users', firebaseUser.uid);
     
@@ -49,7 +58,7 @@ export class AuthService {
           id: firebaseUser.uid,
           email: firebaseUser.email || '',
           name: (userData['name'] as string) || '',
-          role: (userData['role'] as UserRole) || 'supervisor',
+          role: this.normalizeRole(userData['role']) ?? 'supervisor',
           createdAt: new Date(userData['createdAt']),
           wing: (userData['wing'] as string) || '',
         };
@@ -219,7 +228,8 @@ export class AuthService {
 
   hasRole(...roles: UserRole[]): boolean {
     const currentRole = this.authState().user?.role;
-    return currentRole ? roles.includes(currentRole) : false;
+    const normalizedCurrent = this.normalizeRole(currentRole);
+    return normalizedCurrent ? roles.includes(normalizedCurrent) : false;
   }
 
   canEdit(): boolean {

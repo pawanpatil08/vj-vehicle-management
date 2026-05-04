@@ -39,7 +39,11 @@ export class DashboardComponent {
   }
 
   goToAdmin() {
-    this.router.navigate(['/admin']);
+    this.router.navigate(['/data-management']);
+  }
+
+  goToDataManagement() {
+    this.router.navigate(['/data-management']);
   }
 
   goToProfile() {

@@ -1,0 +1,217 @@
+<div class="dm-page">
+  <div class="dm-header">
+    <button type="button" class="secondary-btn" (click)="goToDashboard()">← Dashboard</button>
+    <div class="dm-title">
+      <h1>Data Management</h1>
+      <p>Residents & vehicle records (search / expand / edit / delete)</p>
+    </div>
+  </div>
+
+  <div class="dm-body">
+    <div class="dm-toolbar">
+      <input
+        class="dm-search"
+        type="text"
+        [value]="filter()"
+        placeholder="Search flat, name, vehicle, mobile..."
+        (input)="filter.set($any($event.target).value ?? '')"
+      />
+      <button type="button" class="primary-btn" (click)="openNew()">+ Add New</button>
+    </div>
+
+    <div class="dm-list">
+      <div class="dm-list-empty" *ngIf="filteredList().length === 0">
+        No records{{ filter() ? ' for "' + filter() + '"' : '' }}.
+      </div>
+
+      @for (r of filteredList(); track trackById($index, r)) {
+        <article class="dm-card" [class.open]="isOpen(r.id)">
+          <header class="dm-card-head" (click)="toggle(r.id)">
+            <div class="dm-flat">
+              <span class="eyebrow mono">flat</span>
+              <span class="flat-num">{{ r.flatNumber }}</span>
+            </div>
+            <div class="dm-primary">
+              <div class="dm-name">{{ r.primaryName || '—' }}</div>
+              <div class="dm-mobile mono">{{ r.primaryMobile }}</div>
+            </div>
+            <div class="dm-counts">
+              <span class="badge" title="2-Wheelers">2W · {{ r.vTotal2W || '0' }}</span>
+              <span class="badge" title="4-Wheelers">4W · {{ r.vTotal4W || '0' }}</span>
+              <!-- <span class="badge muted" title="Members">M · {{ r.totalMembers || r.members?.length || 0 }}</span> -->
+            </div>
+            <span class="chev mono">{{ isOpen(r.id) ? '−' : '+' }}</span>
+          </header>
+
+          @if (isOpen(r.id)) {
+            <div class="dm-card-body">
+              <section class="block">
+                <h4 class="block-title mono">contacts</h4>
+                <div class="kv">
+                  <span>Primary</span>
+                  <span>{{ r.primaryName || '—' }}</span>
+                </div>
+                <div class="kv">
+                  <span>Primary mobile</span>
+                  <span class="mono">{{ r.primaryMobile || '—' }}</span>
+                </div>
+                @if (r.secondaryName) {
+                  <div class="kv">
+                    <span>Secondary</span>
+                    <span>{{ r.secondaryName }}</span>
+                  </div>
+                }
+                @if (r.secondaryMobile) {
+                  <div class="kv">
+                    <span>Secondary mobile</span>
+                    <span class="mono">{{ r.secondaryMobile }}</span>
+                  </div>
+                }
+                <div class="kv">
+                  <span>Occupied by</span>
+                  <span>{{ r.occupiedBy || 'Owner' }}</span>
+                </div>
+              </section>
+
+              @if (r.vehicles && r.vehicles.length > 0) {
+                <section class="block">
+                  <h4 class="block-title mono">vehicles · {{ r.vehicles.length }}</h4>
+                  <div class="vehicles">
+                    @for (v of r.vehicles; track v.reg) {
+                      <div class="vehicle">
+                        <span class="v-type mono">{{ v.type === '4-Wheeler' ? '4W' : '2W' }}</span>
+                        <span class="v-reg mono">{{ v.reg }}</span>
+                        <span class="v-owner">{{ v.owner }}</span>
+                      </div>
+                    }
+                  </div>
+                </section>
+              }
+
+              @if (r.members && r.members.length > 0) {
+                <section class="block">
+                  <h4 class="block-title mono">members · {{ r.members.length }}</h4>
+                  <div class="members">
+                    @for (m of r.members; track m.name) {
+                      <div class="member">
+                        <span>{{ m.name }}</span>
+                        @if (m.age) {
+                          <span class="age mono">· {{ m.age }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </section>
+              }
+
+              @if (r.anyPets !== 'NO') {
+                <section class="block">
+                  <h4 class="block-title mono">pets</h4>
+                  <div>{{ r.anyPets }} {{ r.petType1 }} {{ r.petType2 }}</div>
+                </section>
+              }
+            </div>
+
+            <div class="dm-card-body-actions">
+              <button type="button" class="icon-btn" title="Edit" (click)="openEdit(r); $event.stopPropagation()">✏️</button>
+              <button type="button" class="icon-btn delete" title="Delete" (click)="confirmDelete(r); $event.stopPropagation()">🗑️</button>
+            </div>
+          }
+        </article>
+      }
+    </div>
+  </div>
+
+  <!-- Modal for full edit/add -->
+  @if (showModal()) {
+    <div class="edit-modal-backdrop" (click)="closeModal()">
+      <div class="edit-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2 class="modal-title">{{ editingId() ? 'Edit Flat ' + form().flatNumber : 'Add New Entry' }}</h2>
+          <button class="modal-close" (click)="closeModal()" title="Close">×</button>
+        </div>
+
+        <div class="dm-form">
+          <div class="grid-2">
+            <label>Flat Number *
+              <input type="text" [value]="form().flatNumber" (input)="updateField('flatNumber', $any($event.target).value ?? '')" />
+            </label>
+            <label>Occupied By
+              <input type="text" [value]="form().occupiedBy" (input)="updateField('occupiedBy', $any($event.target).value ?? '')" />
+            </label>
+            <label>Primary Name
+              <input type="text" [value]="form().primaryName" (input)="updateField('primaryName', $any($event.target).value ?? '')" />
+            </label>
+            <label>Primary Mobile
+              <input type="text" [value]="form().primaryMobile" (input)="updateField('primaryMobile', $any($event.target).value ?? '')" />
+            </label>
+            <label>Secondary Name
+              <input type="text" [value]="form().secondaryName" (input)="updateField('secondaryName', $any($event.target).value ?? '')" />
+            </label>
+            <label>Secondary Mobile
+              <input type="text" [value]="form().secondaryMobile" (input)="updateField('secondaryMobile', $any($event.target).value ?? '')" />
+            </label>
+          </div>
+
+          <div class="grid-2">
+            <label>Total Members
+              <input type="text" [value]="form().totalMembers" (input)="updateField('totalMembers', $any($event.target).value ?? '')" />
+            </label>
+            <label>Any Pets (YES/NO)
+              <input type="text" [value]="form().anyPets" (input)="updateField('anyPets', $any($event.target).value ?? '')" />
+            </label>
+            <label>2W Total
+              <input type="text" [value]="form().vTotal2W" (input)="updateField('vTotal2W', $any($event.target).value ?? '')" />
+            </label>
+            <label>4W Total
+              <input type="text" [value]="form().vTotal4W" (input)="updateField('vTotal4W', $any($event.target).value ?? '')" />
+            </label>
+          </div>
+
+          <div class="dm-section">
+            <h3>Members (up to 6)</h3>
+            <div class="dm-rows">
+              <div class="dm-row grid-2" *ngFor="let m of form().members; let i = index">
+                <label>Name
+                  <input type="text" [value]="m.name" (input)="updateMember(i, 'name', $any($event.target).value ?? '')" />
+                </label>
+                <label>Age
+                  <input type="text" [value]="m.age" (input)="updateMember(i, 'age', $any($event.target).value ?? '')" />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="dm-section">
+            <h3>Vehicles (up to 6)</h3>
+            <div class="dm-rows">
+              <div class="dm-row grid-3" *ngFor="let v of form().vehicles; let i = index">
+                <label>Owner
+                  <input type="text" [value]="v.owner" (input)="updateVehicle(i, 'owner', $any($event.target).value ?? '')" />
+                </label>
+                <label>Reg *
+                  <input type="text" [value]="v.reg" (input)="updateVehicle(i, 'reg', $any($event.target).value ?? '')" />
+                </label>
+                <label>Type
+                  <select [value]="v.type" (change)="updateVehicle(i, 'type', $any($event.target).value ?? '')">
+                    <option value="2-Wheeler">2-Wheeler</option>
+                    <option value="4-Wheeler">4-Wheeler</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div class="dm-help">Leave empty rows blank; only vehicles with reg saved.</div>
+          </div>
+
+          <div class="dm-form-actions">
+            @if (editingId()) {
+              <button type="button" class="secondary-btn danger" (click)="confirmDeleteFromModal()">Delete</button>
+            }
+            <button type="button" class="secondary-btn" (click)="closeModal()">Cancel</button>
+            <button type="button" class="primary-btn" (click)="save()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

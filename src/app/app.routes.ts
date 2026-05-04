@@ -31,8 +31,15 @@ export const routes: Routes = [
     path: 'admin',
     loadComponent: () =>
       import('./pages/components/admin/admin').then((m) => m.AdminComponent),
-    canActivate: [roleGuard(['admin', 'datamanagement'])],
+    canActivate: [roleGuard(['admin'])],
+  },
+  {
+    path: 'data-management',
+    loadComponent: () =>
+      import('./pages/components/datamanagement/datamanagement').then(
+        (m) => m.DataManagementComponent
+      ),
+    canActivate: [roleGuard(['datamanagement','admin'])],
   },
   { path: '**', redirectTo: '/dashboard' },
 ];
-
