@@ -27,8 +27,51 @@
   box-shadow: var(--shadow-4);
 }
 
-.auth-header {
+.hero-header {
   margin-bottom: 32px;
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-size: clamp(38px, 5.5vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 18px;
+}
+
+.hero-title .accent {
+  color: var(--accent);
+  position: relative;
+  white-space: nowrap;
+}
+
+.hero-title .accent::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  height: 14px;
+  background: var(--accent-soft);
+  z-index: -1;
+  border-radius: 6px;
+  opacity: 0.8;
+}
+
+.hero-sub {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 400px;
 }
 
 .auth-header .eyebrow {
