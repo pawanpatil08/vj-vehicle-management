@@ -1,83 +1,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Resident, VehicleEntry, Member } from './../model/resident.model';
+import { Resident } from './../model/resident.model';
 import { computed, Injectable, signal } from '@angular/core';
-
-/**
- * Robust CSV line splitter that respects quoted commas.
- */
-function parseCsvLine(line: string): string[] {
-  const out: string[] = [];
-  let cur = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '\"') {
-      if (inQuotes && line[i + 1] === '\"') { cur += '\"'; i++; }
-      else { inQuotes = !inQuotes; }
-    } else if (ch === ',' && !inQuotes) {
-      out.push(cur);
-      cur = '';
-    } else {
-      cur += ch;
-    }
-  }
-  out.push(cur);
-  return out.map((c) => c.trim());
-}
-
-function parseCsv(text: string): Record<string, string>[] {
-  const lines = text.replace(/\r\n/g, '\n').split('\n').filter((l) => l.length > 0);
-  if (lines.length === 0) return [];
-  const headers = parseCsvLine(lines[0]);
-  const rows: Record<string, string>[] = [];
-  for (let i = 1; i < lines.length; i++) {
-    const cells = parseCsvLine(lines[i]);
-    const row: Record<string, string> = {};
-    headers.forEach((h, idx) => { row[h] = cells[idx] ?? ''; });
-    rows.push(row);
-  }
-  return rows;
-}
-
-function rowToResident(row: Record<string, string>, idx: number): Resident {
-  const members: Member[] = [];
-  for (let i = 1; i <= 6; i++) {
-    const name = (row[`mName${i}`] ?? '').trim();
-    const age = (row[`mAge${i}`] ?? '').trim();
-    if (name) members.push({ name, age });
-  }
-  const vehicles: VehicleEntry[] = [];
-  for (let i = 1; i <= 6; i++) {
-    const owner = (row[`vOwner${i}`] ?? '').trim();
-    const reg = (row[`vReg${i}`] ?? '').trim();
-    const type = (row[`vType${i}`] ?? '').trim();
-    if (reg) vehicles.push({ owner, reg, type });
-  }
-  const all = Object.values(row).join(' | ').toLowerCase();
-  return {
-    id: `R-${idx + 1}`,
-    flatNumber: (row['flatNumber'] ?? '').trim(),
-    occupiedBy: (row['occupiedBy'] ?? '').trim(),
-    moveInDate: (row['moveInDate'] ?? '').trim(),
-    myGateReg: (row['myGateReg'] ?? '').trim(),
-    primaryName: (row['mgName1'] ?? '').trim(),
-    primaryMobile: (row['mgMobile1'] ?? '').trim(),
-    secondaryName: (row['mgName2'] ?? '').trim(),
-    secondaryMobile: (row['mgMobile2'] ?? '').trim(),
-    totalMembers: (row['totalMembers'] ?? '').trim(),
-    members,
-    vTotal2W: (row['vTotal2W'] ?? '').trim(),
-    vTotal4W: (row['vTotal4W'] ?? '').trim(),
-    vehicles,
-    anyPets: (row['anyPets'] ?? '').trim(),
-    petType1: (row['petType1'] ?? '').trim(),
-    petType2: (row['petType2'] ?? '').trim(),
-    dateInserted: (row['dateInserted'] ?? '').trim(),
-    _all: all,
-  };
-}
 
 function normalizeReg(s: string): string {
   return s.toLowerCase().replace(/[\s\-]/g, '');
@@ -125,12 +50,10 @@ export class DataService {
   async load(): Promise<void> {
     try {
       this.loading.set(true);
-      const text = await firstValueFrom(
-        this.http.get('residents.csv', { responseType: 'text' })
+      const data = await firstValueFrom(
+        this.http.get<Resident[]>('residents.json')
       );
-      const rows = parseCsv(text);
-      const data = rows.map(rowToResident).filter((r) => r.flatNumber);
-      this.residents.set(data);
+      this.residents.set(Array.isArray(data) ? data : []);
       this.error.set('');
     } catch (e: any) {
       this.error.set('Failed to load resident data');
