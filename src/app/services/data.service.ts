@@ -1,8 +1,9 @@
 
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { FirebaseDataService } from './firebase-data.service';
 import { Resident } from './../model/resident.model';
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal, inject } from '@angular/core';
 
 function normalizeReg(s: string): string {
   return s.toLowerCase().replace(/[\s\-]/g, '');
@@ -45,18 +46,29 @@ export class DataService {
     });
   });
 
+  private firebaseData = inject(FirebaseDataService);
   constructor(private http: HttpClient) {}
 
   async load(): Promise<void> {
     try {
       this.loading.set(true);
-      const data = await firstValueFrom(
-        this.http.get<Resident[]>('residents.json')
-      );
-      this.residents.set(Array.isArray(data) ? data : []);
+      console.log('[DataService] load() fetching residents from Firestore...');
+      const data = await this.firebaseData.getResidents();
+      console.log('[DataService] load() fetched residents:', data.length);
+      // Compute _all client-side
+      const fullData = data.map(r => ({
+        ...r,
+        _all: [
+          r.flatNumber, r.occupiedBy, r.primaryName, r.primaryMobile,
+          r.secondaryName || '', r.secondaryMobile || '',
+          ...(r.vehicles || []).map(v => `${v.owner} ${v.reg} ${v.type}`),
+          ...(r.members || []).map(m => `${m.name} ${m.age}`),
+        ].join(' | ').toLowerCase()
+      }));
+      this.residents.set(fullData);
       this.error.set('');
     } catch (e: any) {
-      this.error.set('Failed to load resident data');
+      this.error.set('Failed to load resident data from Firebase');
       console.error(e);
     } finally {
       this.loading.set(false);
@@ -75,33 +87,19 @@ export class DataService {
   }
   logout() { this.isAdmin.set(false); }
 
-  addResident(r: Omit<Resident, 'id' | '_all'>): Resident {
-    const id = `R-${Date.now()}`;
-    const all = Object.values(r).flatMap((v) =>
-      Array.isArray(v) ? v.map((x: any) => Object.values(x).join(' ')) : [String(v)]
-    ).join(' | ').toLowerCase();
-    const full: Resident = { ...r, id, _all: all };
-    this.residents.update((list) => [full, ...list]);
-    return full;
+  async addResident(r: Omit<Resident, 'id' | '_all'>): Promise<Resident> {
+    await this.firebaseData.addResident({ ...r, vehicles: r.vehicles || [], members: r.members || [] } as any);
+    await this.load(); // Refresh
+    return { id: '', ...r, _all: '' } as Resident;
   }
 
-  updateResident(id: string, patch: Partial<Resident>) {
-    this.residents.update((list) =>
-      list.map((r) => {
-        if (r.id !== id) return r;
-        const merged: Resident = { ...r, ...patch };
-        merged._all = [
-          merged.flatNumber, merged.occupiedBy, merged.primaryName, merged.primaryMobile,
-          merged.secondaryName, merged.secondaryMobile,
-          ...merged.vehicles.map((v) => `${v.owner} ${v.reg} ${v.type}`),
-          ...merged.members.map((m) => `${m.name} ${m.age}`),
-        ].join(' | ').toLowerCase();
-        return merged;
-      })
-    );
+  async updateResident(id: string, patch: Partial<Resident>): Promise<void> {
+    await this.firebaseData.updateResident(id, patch);
+    await this.load(); // Refresh
   }
 
-  deleteResident(id: string) {
-    this.residents.update((list) => list.filter((r) => r.id !== id));
+  async deleteResident(id: string): Promise<void> {
+    await this.firebaseData.deleteResident(id);
+    await this.load(); // Refresh
   }
 }

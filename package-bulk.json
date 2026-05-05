@@ -1,0 +1,15 @@
+{
+  "name": "bulk-upload",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "firebase": "^10.12.2"
+  },
+  "scripts": {
+    "upload": "tsx upload-residents.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.4.1",
+    "tsx": "^4.19.1"
+  }
+}

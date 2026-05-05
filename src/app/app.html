@@ -1,16 +1,16 @@
 <header class="app-header" *ngIf="authService.isAuthenticated() || authService.authState().loading">
   <div class="header-left">
-    <div class="header-brand">Vehicle Management</div>
+    <div class="header-brand">Vehicle &amp; data Management</div>
   </div>
 
   <div class="header-right">
-    <button class="profile-button" type="button" (click)="router.navigate(['/profile'])" aria-label="Open profile page" [disabled]="!authService.isAuthenticated()">
+    <!-- <button type="button" class="secondary-btn" style="margin-right: 1rem;" (click)="router.navigate([&apos;/dashboard&apos;])" aria-label="Go to Dashboard">← Dashboard</button> -->
+    <button class="profile-button" type="button" (click)="router.navigate([&apos;/profile&apos;])" aria-label="Open profile page" [disabled]="!authService.isAuthenticated()">
       <span class="avatar">{{ avatarInitial }}</span>
     </button>
   </div>
 </header>
 
 <router-outlet></router-outlet>
-
 
 

@@ -5,6 +5,7 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  updateDoc,
   Firestore,
 } from 'firebase/firestore';
 import { getFirestoreInstance } from '../firebase.config';
@@ -50,11 +51,7 @@ export class FirebaseDataService {
 
   async updateResident(id: string, resident: Partial<Resident>): Promise<void> {
     const docRef = doc(this.firestore, 'residents', id);
-    const residentsCollection = collection(this.firestore, 'residents');
-    // Note: updateDoc is preferred but for simplicity we can use setDoc with merge
-    // For now, this is a placeholder - you'll need to add updateDoc from firebase
-    const snap = await getDocs(residentsCollection);
-    // Implementation for update
+    await updateDoc(docRef, resident);
   }
 
   async deleteResident(id: string): Promise<void> {
