@@ -43,7 +43,7 @@
       <span data-testid="loading-text">loading registry…</span>
     } @else {
       <span data-testid="results-count">
-        {{ data.results().length }} / {{ data.residents().length }} entries
+        {{ sortedResults().length }} / {{ data.residents().length }} entries
       </span>
       @if (data.query()) {
         <span class="kind-pill" data-testid="search-kind-pill">
@@ -67,7 +67,7 @@
   }
 
   <div class="results-grid" data-testid="results-grid">
-    @for (r of data.results(); track trackById($index, r)) {
+    @for (r of sortedResults(); track trackById($index, r)) {
       <article class="card" [class.open]="isOpen(r.id)" data-testid="resident-card">
         <header class="card-head" (click)="toggle(r.id)">
           <div class="flat">

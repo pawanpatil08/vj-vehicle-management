@@ -7,6 +7,7 @@ import { DataService } from '../../../services/data.service';
 import { AuthService } from '../../../services/auth.service';
 import { Resident } from '../../../model/resident.model';
 import { Router } from '@angular/router';
+import { compareFlatNumbers } from '../../../services/flat-number-sort.util';
 
 @Component({
   selector: 'app-search',
@@ -30,6 +31,10 @@ export class SearchComponent {
     ngOnInit() {
     this.data.load();
   }
+  readonly sortedResults = computed<Resident[]>(() => {
+    return [...this.data.results()].sort((a, b) => compareFlatNumbers(a.flatNumber, b.flatNumber));
+  });
+
   onInput(value: string) {
     this.data.setQuery(value);
   }

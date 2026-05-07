@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { FirebaseDataService } from './firebase-data.service';
 import { Resident } from './../model/resident.model';
 import { computed, Injectable, signal, inject } from '@angular/core';
+import { compareFlatNumbers } from './flat-number-sort.util';
 
 function normalizeReg(s: string): string {
   return s.toLowerCase().replace(/[\s\-]/g, '');
@@ -46,12 +47,7 @@ export class DataService {
         return normalizeReg(r.flatNumber).includes(qNorm);
       });
     }
-    // Sort by flat number (extract numeric part)
-    return filtered.sort((a, b) => {
-      const aNum = parseInt(a.flatNumber.replace(/^\D+/g, ''));
-      const bNum = parseInt(b.flatNumber.replace(/^\D+/g, ''));
-      return aNum - bNum;
-    });
+    return filtered.sort((a, b) => compareFlatNumbers(a.flatNumber, b.flatNumber));
   });
 
   private firebaseData = inject(FirebaseDataService);

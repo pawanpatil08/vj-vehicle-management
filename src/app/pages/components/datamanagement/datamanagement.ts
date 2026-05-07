@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { Member, Resident, VehicleEntry } from '../../../model/resident.model';
+import { compareFlatNumbers } from '../../../services/flat-number-sort.util';
 import * as XLSX from 'xlsx';
 
 interface DataManagementFormState {
@@ -61,12 +62,7 @@ export class DataManagementComponent {
     if (f) {
       filtered = list.filter((r) => r._all.includes(f));
     }
-    // Sort by flat number (extract numeric part)
-    return filtered.sort((a, b) => {
-      const aNum = parseInt(a.flatNumber.replace(/^\D+/g, ''));
-      const bNum = parseInt(b.flatNumber.replace(/^\D+/g, ''));
-      return aNum - bNum;
-    });
+    return filtered.sort((a, b) => compareFlatNumbers(a.flatNumber, b.flatNumber));
   });
 
   ngOnInit() {
