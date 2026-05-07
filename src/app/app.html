@@ -1,6 +1,6 @@
 <header class="app-header" *ngIf="authService.isAuthenticated() || authService.authState().loading">
   <div class="header-left">
-    <div class="header-brand">Vehicle &amp; data Management</div>
+    <div class="header-brand" (click)="goToDashboard()" style="cursor: pointer;">Vehicle &amp; data Management</div>
   </div>
 
   <div class="header-right">

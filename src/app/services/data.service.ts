@@ -34,15 +34,23 @@ export class DataService {
   readonly results = computed<Resident[]>(() => {
     const q = this.query().trim().toLowerCase();
     const list = this.residents();
-    if (!q) return list;
-    const qNorm = normalizeReg(q);
-    return list.filter((r) => {
-      if (r._all.includes(q)) return true;
-      // also check normalized vehicle reg
-      for (const v of r.vehicles) {
-        if (normalizeReg(v.reg).includes(qNorm)) return true;
-      }
-      return normalizeReg(r.flatNumber).includes(qNorm);
+    let filtered = list;
+    if (q) {
+      const qNorm = normalizeReg(q);
+      filtered = list.filter((r) => {
+        if (r._all.includes(q)) return true;
+        // also check normalized vehicle reg
+        for (const v of r.vehicles) {
+          if (normalizeReg(v.reg).includes(qNorm)) return true;
+        }
+        return normalizeReg(r.flatNumber).includes(qNorm);
+      });
+    }
+    // Sort by flat number (extract numeric part)
+    return filtered.sort((a, b) => {
+      const aNum = parseInt(a.flatNumber.replace(/^\D+/g, ''));
+      const bNum = parseInt(b.flatNumber.replace(/^\D+/g, ''));
+      return aNum - bNum;
     });
   });
 

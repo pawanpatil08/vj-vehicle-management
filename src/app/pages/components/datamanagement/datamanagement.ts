@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { Member, Resident, VehicleEntry } from '../../../model/resident.model';
+import * as XLSX from 'xlsx';
 
 interface DataManagementFormState {
   flatNumber: string;
@@ -56,8 +57,16 @@ export class DataManagementComponent {
   readonly filteredList = computed<Resident[]>(() => {
     const f = this.filter().trim().toLowerCase();
     const list = this.data.residents();
-    if (!f) return list;
-    return list.filter((r) => r._all.includes(f));
+    let filtered = list;
+    if (f) {
+      filtered = list.filter((r) => r._all.includes(f));
+    }
+    // Sort by flat number (extract numeric part)
+    return filtered.sort((a, b) => {
+      const aNum = parseInt(a.flatNumber.replace(/^\D+/g, ''));
+      const bNum = parseInt(b.flatNumber.replace(/^\D+/g, ''));
+      return aNum - bNum;
+    });
   });
 
   ngOnInit() {
@@ -66,6 +75,10 @@ export class DataManagementComponent {
 
   goToDashboard() {
     this.router.navigate(['/dashboard']);
+  }
+
+  clearSearch() {
+    this.filter.set('');
   }
 
   // Toggle
@@ -196,6 +209,64 @@ export class DataManagementComponent {
 
   trackById(_index: number, r: Resident) {
     return r.id;
+  }
+
+  exportToExcel() {
+    const data = this.filteredList();
+    const exportData = data.map(r => ({
+      'Flat Number': r.flatNumber,
+      'Occupied By': r.occupiedBy,
+      'Primary Name': r.primaryName,
+      'Primary Mobile': r.primaryMobile,
+      'Secondary Name': r.secondaryName || '',
+      'Secondary Mobile': r.secondaryMobile || '',
+      'Total Members': r.totalMembers,
+      '2W Total': r.vTotal2W,
+      '4W Total': r.vTotal4W,
+      'Any Pets': r.anyPets,
+      'Pet Type 1': r.petType1,
+      'Pet Type 2': r.petType2,
+      'Move In Date': r.moveInDate,
+      'Date Inserted': r.dateInserted,
+      // Flatten vehicles
+      ...this.flattenVehicles(r.vehicles),
+      // Flatten members
+      ...this.flattenMembers(r.members)
+    }));
+
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Residents');
+
+    const fileName = `residents_export_${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    this.flashToast('Data exported to Excel successfully!');
+  }
+
+  private flattenVehicles(vehicles: VehicleEntry[]): { [key: string]: string } {
+    const result: { [key: string]: string } = {};
+    vehicles.forEach((v, idx) => {
+      result[`Vehicle ${idx + 1} Owner`] = v.owner;
+      result[`Vehicle ${idx + 1} Reg`] = v.reg;
+      result[`Vehicle ${idx + 1} Type`] = v.type;
+    });
+    return result;
+  }
+
+  private flattenMembers(members: Member[]): { [key: string]: string } {
+    const result: { [key: string]: string } = {};
+    members.forEach((m, idx) => {
+      result[`Member ${idx + 1} Name`] = m.name;
+      result[`Member ${idx + 1} Age`] = m.age;
+    });
+    return result;
+  }
+
+  highlight(value: string): string {
+    const q = this.filter().trim();
+    if (!q || !value) return value;
+    const safe = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return value.replace(new RegExp(safe, 'gi'), (m) => `<mark>${m}</mark>`);
   }
 }
 

@@ -40,4 +40,8 @@ export class App  {
     if (!name) return 'U';
     return name.charAt(0).toUpperCase();
   }
+
+  goToDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
 }

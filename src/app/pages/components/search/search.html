@@ -114,7 +114,7 @@
               }
               <div class="kv">
                 <span>Occupied by</span>
-                <span>{{ r.occupiedBy || '—' }}</span>
+                <span [innerHTML]="highlight(r.occupiedBy || '—')"></span>
               </div>
               @if (r.moveInDate) {
                 <div class="kv">
