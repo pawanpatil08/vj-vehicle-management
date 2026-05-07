@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { DataService } from './services/data.service';
 import { AuthService } from './services/auth.service';
+import { LoadingService } from './services/loading.service';
 
 
 @Component({
@@ -17,6 +18,7 @@ export class App  {
   data = inject(DataService);
   authService = inject(AuthService);
   router = inject(Router);
+  loadingService = inject(LoadingService);
   view = signal<'search' | 'admin'>('search');
 
   setView(v: 'search' | 'admin') { this.view.set(v); }

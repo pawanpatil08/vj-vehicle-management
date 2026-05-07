@@ -11,6 +11,16 @@
   </div>
 </header>
 
+<!-- Global loading overlay -->
+@if (loadingService.isLoading()) {
+  <div class="global-loading-overlay">
+    <div class="global-loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Loading...</span>
+    </div>
+  </div>
+}
+
 <router-outlet></router-outlet>
 
 
