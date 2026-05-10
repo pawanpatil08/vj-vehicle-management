@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { Member, Resident, VehicleEntry } from '../../../model/resident.model';
 import { compareFlatNumbers } from '../../../services/flat-number-sort.util';
+import { AgreementExpiryComponent } from '../agreement-expiry/agreement-expiry';
 import * as XLSX from 'xlsx';
 
 interface DataManagementFormState {
@@ -40,7 +41,7 @@ const emptyForm = (): DataManagementFormState => ({
 @Component({
   selector: 'app-data-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AgreementExpiryComponent],
   templateUrl: './datamanagement.html',
   styleUrl: './datamanagement.scss',
 })
@@ -54,6 +55,7 @@ export class DataManagementComponent {
   readonly form = signal<DataManagementFormState>(emptyForm());
   readonly filter = signal<string>('');
   readonly toast = signal<string>('');
+  readonly activeView = signal<'records' | 'expiry-tracker'>('records');
 
   readonly filteredList = computed<Resident[]>(() => {
     const f = this.filter().trim().toLowerCase();

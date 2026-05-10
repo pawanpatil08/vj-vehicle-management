@@ -14,6 +14,7 @@ export interface Resident {
   flatNumber: string;
   occupiedBy: string;
   moveInDate: string;
+  agreementExpiryDate?: string;  // Added for tracking agreement expiry
   myGateReg: string;
   primaryName: string;
   primaryMobile: string;

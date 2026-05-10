@@ -1,0 +1,49 @@
+<div class="agreement-expiry">
+  <div class="expiry-header">
+    <h2>Agreement Expiry Tracker</h2>
+    <button type="button" class="refresh-btn" (click)="loadResidents()" [disabled]="loading()">
+      {{ loading() ? 'Loading...' : 'Refresh' }}
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">Loading residents...</div>
+  } @else if (expiringAgreements().length === 0) {
+    <div class="empty-state">
+      <p>No expiring agreements in the next 3 months.</p>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="expiry-table">
+        <thead>
+          <tr>
+            <th>Flat</th>
+            <th>Resident Name</th>
+            <th>Mobile</th>
+            <th>Expiry Date</th>
+            <th>Status</th>
+            <th>Days Left</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of expiringAgreements(); track item.resident.id) {
+            <tr [style.border-left]="'4px solid ' + item.status.color">
+              <td class="mono font-bold">{{ item.resident.flatNumber }}</td>
+              <td>{{ item.resident.primaryName }}</td>
+              <td class="mono">{{ item.resident.primaryMobile }}</td>
+              <td class="mono">{{ item.resident.agreementExpiryDate | date:'MMM dd, yyyy' }}</td>
+              <td>
+                <span class="status-badge" [style.background-color]="item.status.color">
+                  {{ getStatusLabel(item.status.status) }}
+                </span>
+              </td>
+              <td class="mono" [style.color]="item.status.color" [style.font-weight]="'600'">
+                {{ item.status.daysLeft > 0 ? item.status.daysLeft + ' days' : 'Expired' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
