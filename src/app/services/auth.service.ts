@@ -259,9 +259,13 @@ export class AuthService {
       });
 
       return users;
-    } catch (error) {
-      console.error('Error getting all users:', error);
-      throw error;
+    } catch (error: any) {
+      const message =
+        error?.code === 'permission-denied'
+          ? 'Firestore permission denied when reading /users. Check Firestore security rules to allow admin access to user profiles.'
+          : error?.message || 'Error getting all users.';
+      console.error('Error getting all users:', message, error);
+      throw new Error(message);
     }
   }
 

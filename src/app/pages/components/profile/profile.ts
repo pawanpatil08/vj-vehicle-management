@@ -17,19 +17,29 @@ export class ProfileComponent implements OnInit {
 
   users = signal<User[]>([]);
   loading = signal<boolean>(false);
+  showUsers = signal<boolean>(false);
+  errorMessage = signal<string | null>(null);
   editingUser = signal<User | null>(null);
 
   ngOnInit() {
-    this.loadUsers();
+    // Users are loaded only when the admin clicks Refresh users.
+  }
+
+  async showAllUsers() {
+    this.showUsers.set(true);
+    await this.loadUsers();
   }
 
   async loadUsers() {
     try {
+      this.errorMessage.set(null);
       this.loading.set(true);
       const allUsers = await this.authService.getAllUsers();
       this.users.set(allUsers);
-    } catch (error) {
-      console.error('Error loading users:', error);
+    } catch (error: any) {
+      const message = error?.message || 'Error loading users.';
+      this.errorMessage.set(message);
+      console.error('Error loading users:', message, error);
     } finally {
       this.loading.set(false);
     }

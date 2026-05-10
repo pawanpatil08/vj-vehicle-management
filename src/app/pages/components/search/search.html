@@ -81,9 +81,6 @@
           <div class="counts">
             <span class="badge" title="2-Wheelers">2W · {{ r.vTotal2W || '0' }}</span>
             <span class="badge" title="4-Wheelers">4W · {{ r.vTotal4W || '0' }}</span>
-            <span class="badge muted" title="Members"
-              >M · {{ r.totalMembers || r.members.length }}</span
-            >
           </div>
           <span class="chev mono">{{ isOpen(r.id) ? '−' : '+' }}</span>
         </header>
@@ -116,12 +113,6 @@
                 <span>Occupied by</span>
                 <span [innerHTML]="highlight(r.occupiedBy || '—')"></span>
               </div>
-              @if (r.moveInDate) {
-                <div class="kv">
-                  <span>Move-in</span>
-                  <span class="mono">{{ r.moveInDate }}</span>
-                </div>
-              }
             </section>
 
             @if (r.vehicles.length > 0) {
@@ -133,22 +124,6 @@
                       <span class="v-type mono">{{ v.type === '4-Wheeler' ? '4W' : '2W' }}</span>
                       <span class="v-reg mono" [innerHTML]="highlight(v.reg)"></span>
                       <span class="v-owner" [innerHTML]="highlight(v.owner)"></span>
-                    </div>
-                  }
-                </div>
-              </section>
-            }
-
-            @if (r.members.length > 0) {
-              <section class="block">
-                <h4 class="block-title mono">members · {{ r.members.length }}</h4>
-                <div class="members">
-                  @for (m of r.members; track m.name) {
-                    <div class="member">
-                      <span [innerHTML]="highlight(m.name)"></span>
-                      @if (m.age) {
-                        <span class="age mono">· {{ m.age }}</span>
-                      }
                     </div>
                   }
                 </div>

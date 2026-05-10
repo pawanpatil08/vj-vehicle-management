@@ -158,6 +158,27 @@
   color: var(--ink);
 }
 
+.section-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.secondary-btn {
+  padding: 8px 12px;
+  font-size: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.secondary-btn:hover:not(:disabled) {
+  background: var(--bg-2);
+}
+
 .primary-btn.small {
   padding: 8px 12px;
   font-size: 12px;
@@ -169,6 +190,44 @@
   padding: 40px;
   color: var(--muted);
   font-style: italic;
+}
+
+.error-message {
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(220, 38, 38, 0.08);
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-1);
+}
+
+.icon-btn:hover {
+  background: white;
+  transform: scale(1.05);
+}
+
+.icon-btn.delete {
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+}
+
+.icon-btn.delete:hover {
+  background: rgb(239, 68, 68);
 }
 
 .user-table-container {

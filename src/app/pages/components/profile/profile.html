@@ -49,15 +49,24 @@
     <section class="user-management">
       <div class="section-header">
         <h2>User Management</h2>
-        <button type="button" class="primary-btn small" (click)="goToRegister()">
-          + Add User
-        </button>
+        <div class="section-actions">
+          <button type="button" class="secondary-btn small" (click)="showAllUsers()" [disabled]="loading()">
+            Load users
+          </button>
+          <button type="button" class="primary-btn small" (click)="goToRegister()">
+            + Add User
+          </button>
+        </div>
       </div>
 
-      @if (loading()) {
-        <div class="loading">Loading users...</div>
-      } @else {
-        <div class="user-table-container">
+      @if (showUsers()) {
+        @if (loading()) {
+          <div class="loading">Loading users...</div>
+        } @else {
+          @if (errorMessage()) {
+            <div class="error-message">{{ errorMessage() }}</div>
+          }
+          <div class="user-table-container">
           <table class="user-table">
             <thead>
               <tr>
@@ -125,8 +134,8 @@
                     <td>{{ user.wing || '—' }}</td>
                     <td class="mono">{{ user.createdAt | date:'short' }}</td>
                     <td class="actions">
-                      <button type="button" class="edit-btn small" (click)="startEdit(user)">Edit</button>
-                      <button type="button" class="delete-btn small" (click)="deleteUser(user)">Delete</button>
+                      <button type="button" class="icon-btn" title="Edit" (click)="startEdit(user)"><i class="fas fa-edit"></i></button>
+                      <button type="button" class="icon-btn delete" title="Delete" (click)="deleteUser(user)"><i class="fas fa-trash-alt"></i></button>
                     </td>
                   </tr>
                 }
@@ -141,6 +150,11 @@
           }
         </div>
       }
+    } @else {
+      <div class="empty-state">
+        <p>Click Load users to fetch the user list.</p>
+      </div>
+    }
     </section>
   }
 </div>
